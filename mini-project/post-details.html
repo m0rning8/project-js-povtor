@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Details</title>
+    <style>
+        #postDetails {
+            width: 90%;
+            margin: 0 auto;
+            margin-bottom: 20px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="postDetails"></div>
+
+<script>
+    let urlParams = new URLSearchParams(window.location.search);
+    let postId = urlParams.get('id');
+
+    fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+        .then(response => response.json())
+        .then(post => {
+            renderPostDetails(post);
+            fetch(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`)
+                .then(response => response.json())
+                .then(comments => {
+                    renderPostComments(comments);
+                })
+        })
+
+    function renderPostDetails(post) {
+        let postDetailsDiv = document.getElementById('postDetails');
+        postDetailsDiv.innerHTML = `<p>ID: ${post.id}</p>
+                                         <p>Title: ${post.title}</p>
+                                         <p>Body: ${post.body}</p>`;
+    }
+
+    function renderPostComments(comments) {
+        let postDetailsDiv = document.getElementById('postDetails');
+        let commentsList = document.createElement('ul');
+        comments.forEach(comment => {
+            let li = document.createElement('li');
+            li.textContent = `${comment.name}: ${comment.body}`;
+            commentsList.appendChild(li);
+        });
+        postDetailsDiv.appendChild(commentsList);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <style>
+        #userDetails {
+            width: 90%;
+            margin: 0 auto;
+            margin-bottom: 20px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        #postsButton {
+            display: block;
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 20px;
+            background-color: cadetblue;
+            color: white;
+            border: none;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body>
+<div id="userDetails"></div>
+<button id="postsButton">Posts of Current User</button>
+
+<script>
+    let urlParams = new URLSearchParams(window.location.search);
+    let userId = urlParams.get('id');
+
+    fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+        .then(response => response.json())
+        .then(user => {
+            renderUserDetails(user);
+            document.getElementById('postsButton').addEventListener('click', function() {
+                fetch(`https://jsonplaceholder.typicode.com/users/${userId}/posts`)
+                    .then(response => response.json())
+                    .then(posts => {
+                        renderUserPosts(posts);
+                    })
+            });
+        })
+
+    function renderUserDetails(user) {
+        let userDetailsDiv = document.getElementById('userDetails');
+        userDetailsDiv.innerHTML = `<p>ID: ${user.id}</p>
+                                         <p>Name: ${user.name}</p>
+                                         <p>Email: ${user.email}</p>
+                                         <p>Phone: ${user.phone}</p>
+                                         <p>Website: ${user.website}</p>`;
+    }
+
+    function renderUserPosts(posts) {
+        let userDetailsDiv = document.getElementById('userDetails');
+        let postsList = document.createElement('ul');
+        posts.forEach(post => {
+            let li = document.createElement('li');
+            li.innerHTML = `<a href="post-details.html?id=${post.id}">${post.title}</a>`;
+            postsList.appendChild(li);
+        });
+        userDetailsDiv.appendChild(postsList);
+    }
+</script>
+</body>
+</html>
